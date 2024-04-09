@@ -11,11 +11,11 @@ import "@openzeppelin/contracts/governance/extensions/GovernorVotesQuorumFractio
 import "@openzeppelin/contracts/governance/extensions/GovernorTimelockControl.sol";
 
 contract CliqueCapitalDAO is Governor, GovernorSettings, GovernorCountingSimple, GovernorStorage, GovernorVotes, GovernorVotesQuorumFraction, GovernorTimelockControl {
-    constructor(IVotes _token, TimelockController _timelock)
-        Governor("Clique Capital DAO")
-        GovernorSettings(1 days, 1 weeks, 10000e18)
+    constructor(IVotes _token, TimelockController _timelock, string memory daoName, uint32 _votingDelay, uint32 _votingPeriod, uint256 _proposalThreshold, uint256 _quorumVotesPercent)
+        Governor(daoName)
+        GovernorSettings(_votingDelay, _votingPeriod, _proposalThreshold)
         GovernorVotes(_token)
-        GovernorVotesQuorumFraction(4)
+        GovernorVotesQuorumFraction(_quorumVotesPercent)
         GovernorTimelockControl(_timelock)
     {}
 

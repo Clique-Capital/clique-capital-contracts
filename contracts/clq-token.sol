@@ -7,8 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Votes.sol";
 
 contract CliqueCoin is ERC20, ERC20Permit, ERC20Votes {
-    constructor() ERC20("Clique Coin", "CLQ") ERC20Permit("Clique Coin") {
-        _mint(msg.sender, 10000 * 10 ** decimals());
+    constructor(string memory name, string memory ticker, uint256 premine, address premineDestination) ERC20(name, ticker) ERC20Permit(name) {
+        _mint(premineDestination, premine * 10 ** decimals());
     }
 
     function clock() public view override returns (uint48) {
