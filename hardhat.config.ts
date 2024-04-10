@@ -1,36 +1,29 @@
 import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox-viem";
 import { config as dotEnvConfig } from "dotenv";
+import "@nomicfoundation/hardhat-viem";
 
 dotEnvConfig();
 
-require('@openzeppelin/hardhat-upgrades');
-
-const { INFURA_API_KEY, MNEMONIC, REPORT_GAS } = process.env;
-
-if (!INFURA_API_KEY || !MNEMONIC) {
-  throw new Error("Please set your INFURA_API_KEY and MNEMONIC in a .env file");
-}
-
-const chainIds = {
-  "arbitrum-mainnet": 42161,
-  avalanche: 43114,
-  bsc: 56,
-  ganache: 1337,
-  hardhat: 31337,
-  mainnet: 1,
-  "optimism-mainnet": 10,
-  "polygon-mainnet": 137,
-  "polygon-mumbai": 80001,
-  sepolia: 11155111,
-};
+const {
+  INFURA_API_KEY,
+  REPORT_GAS,
+  INFURA_ARBITRUM_SEPOLIA_ENDPOINT,
+  PRIVATE_KEY,
+  PUBLIC_ADDRESS,
+} = process.env;
+if (!INFURA_API_KEY) throw new Error("INFURA_API_KEY is not set");
+if (!REPORT_GAS) throw new Error("REPORT_GAS is not set");
+if (!INFURA_ARBITRUM_SEPOLIA_ENDPOINT)
+  throw new Error("INFURA_ARBITRUM_SEPOLIA_ENDPOINT is not set");
+if (!PRIVATE_KEY) throw new Error("ARBITRUM_SEPOLIA_PRIVATE_KEY is not set");
+if (!PUBLIC_ADDRESS) throw new Error("PUBLIC_ADDRESS is not set");
 
 const config: HardhatUserConfig = {
-  gasReporter: {
-    currency: "USD",
-    enabled: REPORT_GAS === "true",
-    excludeContracts: [],
-    src: "./contracts",
+  networks: {
+    arbitrum_sepolia: {
+      url: INFURA_ARBITRUM_SEPOLIA_ENDPOINT,
+      accounts: [PRIVATE_KEY],
+    },
   },
   paths: {
     artifacts: "./artifacts",
@@ -39,7 +32,7 @@ const config: HardhatUserConfig = {
     tests: "./test",
   },
   solidity: {
-    version:"0.8.24",
+    version: "0.8.24",
     settings: {
       metadata: {
         // Not including the metadata hash
@@ -52,13 +45,8 @@ const config: HardhatUserConfig = {
         enabled: true,
         runs: 800,
       },
-      typechain: {
-        outDir: "types",
-        target: "ethers-v6",
-      },
     },
   },
-
 };
 
 export default config;
