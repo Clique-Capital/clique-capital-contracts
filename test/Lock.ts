@@ -13,6 +13,7 @@ describe("Clique Coin and Clique Capital DAO", () => {
   let clqDao: Awaited<
     ReturnType<typeof hre.viem.deployContract<"CliqueCapitalDAO">>
   >;
+  let tether: Awaited<ReturnType<typeof hre.viem.getContractAt<"Tether">>>;
 
   const cliqueCoinArgs = [
     "CliqueCoin",
@@ -27,6 +28,8 @@ describe("Clique Coin and Clique Capital DAO", () => {
 
     clqCoin = await hre.viem.deployContract("CliqueCoin", [...cliqueCoinArgs]);
 
+    tether = await hre.viem.deployContract("Tether");
+
     const cliqueDaoArgs = [
       clqCoin.address,
       "Clique Capital DAO",
@@ -40,6 +43,11 @@ describe("Clique Coin and Clique Capital DAO", () => {
     ]);
 
     publicClient = await hre.viem.getPublicClient();
+
+    const positionManager = await hre.viem.getContractAt(
+      "NonfungiblePositionManager",
+      "0x1238536071e1c677a632429e3655c799b22cda52"
+    );
   });
 
   describe("Test Deployment", () => {

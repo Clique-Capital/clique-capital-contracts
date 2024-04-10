@@ -20,6 +20,12 @@ if (!PUBLIC_ADDRESS) throw new Error("PUBLIC_ADDRESS is not set");
 
 const config: HardhatUserConfig = {
   networks: {
+    hardhat: {
+      forking: {
+        url: INFURA_ARBITRUM_SEPOLIA_ENDPOINT,
+        blockNumber: 5665622,
+      },
+    },
     arbitrum_sepolia: {
       url: INFURA_ARBITRUM_SEPOLIA_ENDPOINT,
       accounts: [PRIVATE_KEY],
