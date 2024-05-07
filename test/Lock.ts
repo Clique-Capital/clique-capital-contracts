@@ -1,10 +1,19 @@
 import { expect } from "chai";
-import hre from "hardhat";
+import hre, { ethers } from "hardhat";
 import { parseEther, formatEther } from "viem";
+import NonfungiblePositionManager from "@uniswap/v3-periphery/artifacts/contracts/NonfungiblePositionManager.sol/NonfungiblePositionManager.json";
+import { Pool, computePoolAddress } from "@uniswap/v3-sdk";
+import { Token } from "@uniswap/sdk-core";
+
+const NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS =
+  "0x6b2937Bde17889EDCf8fbD8dE31C3C2a70Bc4d65";
+
+const UniswapV3Factory_ADDRESS = "0x248AB79Bbb9bC29bB72f7Cd42F17e054Fc40188e";
 
 // we need to break it up into 3 parts eventually, token, dao, token and dao
 describe("Clique Coin and Clique Capital DAO", () => {
-  let signers: Awaited<ReturnType<typeof hre.viem.getWalletClients>>;
+  let walletClients: Awaited<ReturnType<typeof hre.viem.getWalletClients>>;
+  let signers: Awaited<ReturnType<typeof hre.ethers.getSigners>>;
   let publicClient: Awaited<ReturnType<typeof hre.viem.getPublicClient>>;
 
   let clqCoin: Awaited<
@@ -24,7 +33,8 @@ describe("Clique Coin and Clique Capital DAO", () => {
   ] as const;
 
   before(async () => {
-    signers = await hre.viem.getWalletClients();
+    walletClients = await hre.viem.getWalletClients();
+    signers = await hre.ethers.getSigners();
 
     clqCoin = await hre.viem.deployContract("CliqueCoin", [...cliqueCoinArgs]);
 
@@ -42,12 +52,58 @@ describe("Clique Coin and Clique Capital DAO", () => {
       ...cliqueDaoArgs,
     ]);
 
-    publicClient = await hre.viem.getPublicClient();
-
-    const positionManager = await hre.viem.getContractAt(
-      "NonfungiblePositionManager",
-      "0x1238536071e1c677a632429e3655c799b22cda52"
+    // Create pool
+    // const nonfungiblePositionManager = await hre.ethers.getContractAt(
+    //   NonfungiblePositionManager.contractName,
+    //   nonfungiblePositionManagerAddress
+    // );
+    // console.log("Creating pool", nonfungiblePositionManager);
+    const contract = await hre.ethers.getContractAt(
+      NonfungiblePositionManager.abi,
+      NONFUNGIBLE_POSITION_MANAGER_CONTRACT_ADDRESS
     );
+
+    const token1Approval = await tether.write.approve([
+      process.env.PUBLIC_ADDRESS,
+      parseEther("100"),
+    ]);
+    const token0Approval = await clqCoin.write.approve([
+      process.env.PUBLIC_ADDRESS,
+      parseEther("100"),
+    ]);
+    const chain = await hre.ethers.provider.getNetwork();
+
+    const clqCoinToken: Token = new Token(
+      Number(chain.chainId),
+      clqCoin.address,
+      18,
+      "Clique Coin",
+      "CLQ"
+    );
+    const tetherToken: Token = new Token(
+      Number(chain.chainId),
+      tether.address,
+      18,
+      "Tether",
+      "USDT"
+    );
+
+    const poolAddress = computePoolAddress({
+      factoryAddress: UniswapV3Factory_ADDRESS,
+      tokenA: clqCoinToken,
+      tokenB: tetherToken,
+      fee: 3000,
+    });
+    const fee = 3000;
+    const sqrtRatioX96 = 0;
+    const liquidity = 1000;
+    const tick = 0;
+    const pool = new Pool(clqCoinToken, tetherToken, fee,sqrtRatioX96, liquidity, tick);
+ 
+    
+
+    // Note that the pool defined by DAI/USDC and fee tier 0.3% must already be created and initialized in order to mint
+    
   });
 
   describe("Test Deployment", () => {

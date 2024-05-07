@@ -1,7 +1,7 @@
 import { HardhatUserConfig } from "hardhat/config";
 import { config as dotEnvConfig } from "dotenv";
 import "@nomicfoundation/hardhat-viem";
-
+import "@nomicfoundation/hardhat-ethers";
 dotEnvConfig();
 
 const {

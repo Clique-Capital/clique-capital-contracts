@@ -10,10 +10,9 @@
 	"include": [
 		"./scripts",
 		"./test",
-		"./typechain-types",
-		"./typechain",
 		"./hardhat.config.ts",
 		"ignition/modules/"
 	],
+	"exclude": ["node_modules", "dist", "artifacts", "abi"],
 	"files": ["./hardhat.config.ts"]
 }
