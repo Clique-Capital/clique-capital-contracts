@@ -31,6 +31,7 @@ const config: HardhatUserConfig = {
       accounts: [PRIVATE_KEY],
     },
   },
+  defaultNetwork: "arbitrum_sepolia",
   paths: {
     artifacts: "./artifacts",
     cache: "./cache",

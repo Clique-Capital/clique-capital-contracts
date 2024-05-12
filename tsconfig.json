@@ -10,6 +10,7 @@
 	"include": [
 		"./scripts",
 		"./test",
+		"./deploy",
 		"./hardhat.config.ts",
 		"ignition/modules/"
 	],

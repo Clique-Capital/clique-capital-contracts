@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract CliqueCapitalPayout is ERC721, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
 
-    constructor(address initialOwner) ERC721("CliqueCapital Payout", "CLQP") Ownable(initialOwner) {}
+    constructor() ERC721("CliqueCapital Payout", "CLQP") Ownable(msg.sender) {}
 
     function safeMint(address to, string memory uri) public onlyOwner {
         uint256 tokenId = _nextTokenId++;
